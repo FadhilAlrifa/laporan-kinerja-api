@@ -1,44 +1,55 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
-    // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    // ----------------------------------------------------
+    // PROJECT LAYOUT & MODULE RESOLUTION
+    // ----------------------------------------------------
+    "rootDir": "./src",              // Wajib: Kompilasi semua file di folder src
+    "outDir": "./dist",              // Wajib: Simpan hasil kompilasi ke folder dist
 
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": [],
-    // For nodejs:
-    // "lib": ["esnext"],
-    // "types": ["node"],
-    // and npm install -D @types/node
+    // ----------------------------------------------------
+    // ENVIRONMENT & MODULE SETTINGS (Node.js & Express)
+    // ----------------------------------------------------
+    "module": "commonjs",            // DIUBAH: Gunakan CommonJS untuk kompatibilitas Node.js yang lebih luas (terutama untuk library seperti Express dan middleware)
+    "target": "es2020",              // Tetap modern (Node.js v14+ ke atas)
+    "esModuleInterop": true,         // Wajib: Memungkinkan import gaya ES6 (import X from 'Y') pada module CommonJS
+    "forceConsistentCasingInFileNames": true, // Disarankan
+    "moduleResolution": "node",      // Wajib: Gunakan resolusi modul standar Node.js
 
-    // Other Outputs
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
+    // Library Types
+    "lib": ["es2020"],               // Hapus ["esnext"] yang terlalu luas, gunakan ES2020
+    "types": ["node"],               // Tambahkan tipe Node.js secara eksplisit (Asumsi Anda sudah npm install -D @types/node)
 
-    // Stricter Typechecking Options
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    // ----------------------------------------------------
+    // STRICTNESS AND SAFETY (Dipertahankan dari template Anda)
+    // ----------------------------------------------------
+    "strict": true,                  // Sangat direkomendasikan
+    "noImplicitAny": true,           // Bagian dari strict
+    "noUncheckedIndexedAccess": true, // Sangat bagus untuk safety
+    "exactOptionalPropertyTypes": true, // Sangat bagus untuk safety
 
-    // Style Options
-    // "noImplicitReturns": true,
-    // "noImplicitOverride": true,
-    // "noUnusedLocals": true,
-    // "noUnusedParameters": true,
-    // "noFallthroughCasesInSwitch": true,
-    // "noPropertyAccessFromIndexSignature": true,
+    // ----------------------------------------------------
+    // STYLE AND CLEANLINESS (Opsional, tapi disarankan)
+    // ----------------------------------------------------
+    "noUnusedLocals": true,          // Deteksi variabel lokal yang tidak terpakai
+    "noUnusedParameters": true,      // Deteksi parameter fungsi yang tidak terpakai
+    "noImplicitReturns": true,       // Pastikan fungsi mengembalikan nilai di semua path
 
-    // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    // ----------------------------------------------------
+    // CLEANUP AND CHECKING
+    // ----------------------------------------------------
+    "skipLibCheck": true,            // Disarankan untuk mempercepat kompilasi
+    "sourceMap": true,               // Disarankan untuk debugging
+    
+    // ----------------------------------------------------
+    // OPSI YANG DIHAPUS/DINONAKTIFKAN KARENA TIDAK COCOK UNTUK BACKEND
+    // ----------------------------------------------------
+    // Hapus/Nonaktifkan opsi yang berfokus pada ES Modules modern yang ketat (verbatimModuleSyntax)
+    // atau yang berfokus pada React/browser (jsx, isolatedModules, moduleDetection: force)
+    "jsx": "preserve",               // Dihapus/diubah (default: none)
+    // "verbatimModuleSyntax": false,
+    // "isolatedModules": false,
+    // "noUncheckedSideEffectImports": false,
+    // "moduleDetection": "auto"
+  },
+  "include": ["src/**/*"] // Wajib: Instruksikan compiler untuk melihat semua file di src
 }
