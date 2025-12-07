@@ -6,6 +6,7 @@ import express, { Request, Response } from 'express';
 import { prisma } from './config/prisma';
 import { authRouter } from './routes/auth.route'; 
 import { errorHandler } from './middleware/error.middleware'; 
+import { reportRouter } from './routes/report.route';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.get('/', (_req, res) => {
         version: 'v1.0'
     });
 });
+
 app.get('/health', (_req: Request, res: Response) => {
     const uptimeSeconds = process.uptime();
     res.json({
@@ -30,7 +32,7 @@ app.get('/health', (_req: Request, res: Response) => {
 });
 
 app.use('/api/auth', authRouter); 
-
+app.use('/api/report', reportRouter);
 app.use(errorHandler); 
 
 async function startServer() {

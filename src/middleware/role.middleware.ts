@@ -20,6 +20,6 @@ export const authorizeRoles = (allowedRoles: Role[]) => {
             });
         }
 
-        next();
+        return next();
     };
 };
