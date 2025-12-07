@@ -1,5 +1,3 @@
-// src/controllers/auth.controller.ts
-
 import { Request, Response, NextFunction } from 'express';
 import { prisma } from '../config/prisma';
 import * as bcrypt from 'bcryptjs';
