@@ -1,6 +1,4 @@
-// prisma/seed.ts
 
-// Memuat variabel lingkungan dari .env secara manual (Wajib untuk seeder)
 import * as dotenv from 'dotenv'; 
 dotenv.config(); 
 
@@ -14,11 +12,9 @@ async function main() {
 
   const passwordHash = await bcrypt.hash('password123', 10);
 
-  // 1. SEED UNIT KERJA
   const unit1 = await prisma.unitKerja.create({
     data: { nama: 'Produksi Pabrik A' },
   });
-  // Tidak menyimpan hasil create ke variabel, karena tidak digunakan
   await prisma.unitKerja.create({ 
     data: { nama: 'Pemasaran & Penjualan' },
   });
@@ -27,7 +23,6 @@ async function main() {
   });
   console.log('3 Unit Kerja berhasil dibuat.');
 
-  // 2. SEED USER
   const userList = [
     {
       name: 'Super Admin',
@@ -54,7 +49,6 @@ async function main() {
 
   await prisma.user.createMany({
     data: userList,
-    // skipDuplicates dihapus karena tidak didukung di SQLite
   });
   console.log('3 User berhasil dibuat (Password: password123).');
 
@@ -70,7 +64,6 @@ async function main() {
 
   await prisma.kategoriKinerja.createMany({
     data: kategoriList,
-    // skipDuplicates dihapus karena tidak didukung di SQLite
   });
   console.log('5 Kategori Kinerja berhasil dibuat.');
 }

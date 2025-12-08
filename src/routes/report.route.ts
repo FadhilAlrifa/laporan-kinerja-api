@@ -7,20 +7,10 @@ import { createReportSchema, updateReportSchema, reportIdSchema } from '../valid
 
 const router = Router();
 
-// ------------------------------------
-// PUBLIC READ ACCESS (Semua role)
-// ------------------------------------
 router.get('/', authenticateToken, getReports);
-router.get('/:id', authenticateToken, validate(reportIdSchema), getReportById);
 
-// ------------------------------------
-// CATEGORY ACCESS (Semua role)
-// ------------------------------------
 router.get('/kategori', authenticateToken, getKategori);
-
-// ------------------------------------
-// ENTRY & SUPER USER ACCESS
-// ------------------------------------
+router.get('/:id', authenticateToken, validate(reportIdSchema), getReportById);
 router.post(
     '/',
     authenticateToken,
@@ -37,9 +27,6 @@ router.patch(
     updateReport
 );
 
-// ------------------------------------
-// SUPER USER ONLY ACCESS
-// ------------------------------------
 router.delete(
     '/:id',
     authenticateToken,
