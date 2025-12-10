@@ -12,18 +12,18 @@ export const createUserSchema = z.object({
         email: z.string().email("Format email tidak valid."),
         password: z.string().min(6, "Password minimal 6 karakter."),
         role: roleEnum,
-        unitKerjaId: z.number().int().positive().nullable()
-            .refine((val, ctx) => {
-                if (ctx.parent.role !== 'SUPER_USER' && val === null) {
-                    ctx.addIssue({
-                        code : z.ZodIssueCode.custom,
-                        message: "Unit Kerja ID wajib diisi untuk ENTRY_USER atau USER biasa.",
-                    });
-                    return false;
-                }
-                return true;
-            }, { path: ['unitKerjaId'] }),
-    }),
+        unitKerjaId: z.number().int().positive().nullable(),
+    })
+    .superRefine((data, ctx) => {
+        if (data.role !== 'SUPER_USER' && data.unitKerjaId === null) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Unit Kerja ID wajib diisi untuk ENTRY_USER atau USER biasa.",
+                path: ['unitKerjaId'],
+            });
+            // return false;
+        }
+    })
 });
 
 export const updateUserSchema = z.object({
