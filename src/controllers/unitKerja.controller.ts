@@ -30,7 +30,7 @@ export const createUnitKerja = async (req: AuthRequest, res: Response, next: Nex
     }
 };
 
-export const getUnitKerjas = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const getUnitKerjas = async (_req: AuthRequest, res: Response, next: NextFunction) => {
     try {
         const units = await prisma.unitKerja.findMany({
             orderBy: { nama: 'asc' },
