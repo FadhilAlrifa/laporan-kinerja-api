@@ -43,8 +43,7 @@ export const getUnitKerjas = async (_req: AuthRequest, res: Response, next: Next
 };
 
 export const getUnitKerjaById = async (req: AuthRequest, res: Response, next: NextFunction) => {
-    // ID sudah divalidasi oleh Zod Schema
-    const id = req.params.id as unknown as number;
+    const id = parseInt(req.params.id!, 10);
 
     try {
         const unit = await prisma.unitKerja.findUnique({
@@ -65,7 +64,7 @@ export const updateUnitKerja = async (req: AuthRequest, res: Response, next: Nex
     if (!checkSuperUser(req, next)) return;
 
     // ID sudah divalidasi
-    const id = req.params.id as unknown as number;
+    const id = parseInt(req.params.id!, 10);
     const dataToUpdate = req.body;
 
     try {
@@ -87,7 +86,7 @@ export const updateUnitKerja = async (req: AuthRequest, res: Response, next: Nex
 export const deleteUnitKerja = async (req: AuthRequest, res: Response, next: NextFunction) => {
     if (!checkSuperUser(req, next)) return;
 
-    const id = req.params.id as unknown as number;
+    const id = parseInt(req.params.id!, 10);
 
     try {
         await prisma.unitKerja.delete({
