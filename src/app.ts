@@ -7,6 +7,7 @@ import { prisma } from './config/prisma';
 import { authRouter } from './routes/auth.route'; 
 import { errorHandler } from './middleware/error.middleware'; 
 import { reportRouter } from './routes/report.route';
+import unitKerjaRoutes from './routes/unitKerja.route';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,6 +34,7 @@ app.get('/health', (_req: Request, res: Response) => {
 
 app.use('/api/auth', authRouter); 
 app.use('/api/report', reportRouter);
+app.use('/api/unit-kerja', unitKerjaRoutes);
 app.use(errorHandler); 
 
 async function startServer() {
