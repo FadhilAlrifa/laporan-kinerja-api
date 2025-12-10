@@ -8,6 +8,7 @@ import { authRouter } from './routes/auth.route';
 import { errorHandler } from './middleware/error.middleware'; 
 import { reportRouter } from './routes/report.route';
 import unitKerjaRoutes from './routes/unitKerja.route';
+import userRoutes from './routes/user.route';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -35,6 +36,7 @@ app.get('/health', (_req: Request, res: Response) => {
 app.use('/api/auth', authRouter); 
 app.use('/api/report', reportRouter);
 app.use('/api/unit-kerja', unitKerjaRoutes);
+app.use('/api/users', userRoutes);
 app.use(errorHandler); 
 
 async function startServer() {

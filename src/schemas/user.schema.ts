@@ -16,7 +16,7 @@ export const createUserSchema = z.object({
             .refine((val, ctx) => {
                 if (ctx.parent.role !== 'SUPER_USER' && val === null) {
                     ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
+                        code : z.ZodIssueCode.custom,
                         message: "Unit Kerja ID wajib diisi untuk ENTRY_USER atau USER biasa.",
                     });
                     return false;
