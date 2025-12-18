@@ -15,6 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(loggerMiddleware);
 app.get('/', (_req, res) => {
     res.json({
         success: true,
@@ -34,11 +35,12 @@ app.get('/health', (_req: Request, res: Response) => {
     });
 });
 
+
 app.use('/api/auth', authRouter); 
 app.use('/api/report', reportRouter);
 app.use('/api/unit-kerja', unitKerjaRoutes);
 app.use('/api/users', userRoutes);
-app.use(loggerMiddleware);
+
 app.use(errorHandler); 
 
 async function startServer() {
