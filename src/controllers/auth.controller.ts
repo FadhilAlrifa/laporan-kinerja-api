@@ -41,7 +41,13 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
             success: true,
             message: 'Login berhasil.',
             data: {
-                user: { id: user.id, name: user.name, email: user.email, role: user.role },
+                user: { 
+                    id: user.id, 
+                    name: user.name, 
+                    email: user.email, 
+                    role: user.role,
+                    unitKerjaId: user.unitKerjaId 
+                },
                 accessToken,
                 refreshToken,
             },
@@ -77,7 +83,8 @@ export const me = async (req: AuthRequest, res: Response, next: NextFunction) =>
                 name: fullUser.name,
                 email: fullUser.email,
                 role: fullUser.role,
-                unitKerja: fullUser.unitKerja ? fullUser.unitKerja.nama : null,
+                unitKerjaId: fullUser.unitKerjaId,
+                unitKerjaNama: fullUser.unitKerja ? fullUser.unitKerja.nama : null,
             },
         });
     } catch (error) {
@@ -124,7 +131,7 @@ export const refresh = async (req: Request, res: Response, next: NextFunction) =
 };
 
 export const register = async (req: Request, res: Response, next: NextFunction) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role, unitKerjaId } = req.body;
     
     try {
         const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -140,14 +147,21 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
                 name,
                 email,
                 password: passwordHash,
-                role: 'USER', 
+                role: role || 'USER',
+                unitKerjaId: unitKerjaId ? parseInt(unitKerjaId, 10) : null,
             },
         });
 
         res.status(201).json({
             success: true,
             message: 'Registrasi berhasil. Silakan login.',
-            data: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role },
+            data: { 
+                id: newUser.id, 
+                email: newUser.email, 
+                name: newUser.name, 
+                role: newUser.role,
+                unitKerjaId: newUser.unitKerjaId
+            },
         });
 
     } catch (error) {
