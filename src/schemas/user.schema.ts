@@ -21,7 +21,6 @@ export const createUserSchema = z.object({
                 message: "Unit Kerja ID wajib diisi untuk ENTRY_USER atau USER biasa.",
                 path: ['unitKerjaId'],
             });
-            // return false;
         }
     })
 });

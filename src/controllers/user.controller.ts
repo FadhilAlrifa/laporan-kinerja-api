@@ -28,7 +28,7 @@ export const createUser = async (req: AuthRequest, res: Response, next: NextFunc
             data: { 
                 name, 
                 email, 
-                password: hashedPassword, // Simpan hash
+                password: hashedPassword,
                 role, 
                 unitKerjaId 
             },

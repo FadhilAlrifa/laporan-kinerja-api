@@ -9,6 +9,7 @@ import { errorHandler } from './middleware/error.middleware';
 import { reportRouter } from './routes/report.route';
 import unitKerjaRoutes from './routes/unitKerja.route';
 import userRoutes from './routes/user.route';
+import { loggerMiddleware } from './middleware/logger.middleware';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/report', reportRouter);
 app.use('/api/unit-kerja', unitKerjaRoutes);
 app.use('/api/users', userRoutes);
+app.use(loggerMiddleware);
 app.use(errorHandler); 
 
 async function startServer() {
