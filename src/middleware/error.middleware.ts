@@ -1,9 +1,9 @@
-import { ErrorRequestHandler, Request, Response, NextFunction } from 'express';
+import { ErrorRequestHandler } from 'express';
 import { Prisma } from '@prisma/client';
 import * as jwt from 'jsonwebtoken';
 import { ZodError } from 'zod';
 
-export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
+export const errorHandler: ErrorRequestHandler = (err, req, res, _next) => {
     let statusCode = err.statusCode || 500;
     let message = err.message || 'Terjadi kesalahan server internal.';
     let errors: any = null;
