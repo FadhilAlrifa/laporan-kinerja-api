@@ -13,7 +13,7 @@ const handleKategori = (laporanId: number, kategoriData: any[]) => {
 export const createReport = async (req: AuthRequest, res: Response, next: NextFunction) => {
     const { tanggal, target, realisasi, keterangan, unitKerjaId, kategori } = req.body;
     const user = req.user!;
-    
+
     if (user.role !== 'SUPER_USER' && user.role !== 'ENTRY_USER') {
         return next({ statusCode: 403, message: 'Hanya Entry User dan Super User yang dapat membuat laporan.' });
     }
@@ -23,26 +23,31 @@ export const createReport = async (req: AuthRequest, res: Response, next: NextFu
     }
 
     try {
-        const newReport = await prisma.laporanKinerja.create({
-            data: {
-                tanggal: new Date(tanggal), 
-                target,
-                realisasi,
-                keterangan,
-                unitKerjaId,
-            },
-        });
+        const result = await prisma.$transaction(async (tx) => {
+            const newReport = await tx.laporanKinerja.create({
+                data: {
+                    tanggal: new Date(tanggal),
+                    target: parseFloat(target),
+                    realisasi: parseFloat(realisasi),
+                    keterangan,
+                    unitKerjaId,
+                },
+            });
 
-        const mappedKategori = handleKategori(newReport.id, kategori);
-        await prisma.laporanKinerjaKategoriKinerja.createMany({
-            data: mappedKategori,
-            // skipDuplicates: true,
+            if (kategori && kategori.length > 0) {
+                const mappedKategori = handleKategori(newReport.id, kategori);
+                await tx.laporanKinerjaKategoriKinerja.createMany({
+                    data: mappedKategori,
+                });
+            }
+
+            return newReport;
         });
 
         res.status(201).json({
             success: true,
             message: 'Laporan kinerja berhasil dibuat.',
-            data: { id: newReport.id, tanggal: newReport.tanggal },
+            data: result,
         });
 
     } catch (error) {
@@ -52,11 +57,10 @@ export const createReport = async (req: AuthRequest, res: Response, next: NextFu
 
 export const getReports = async (req: AuthRequest, res: Response, next: NextFunction) => {
     const user = req.user!;
-    
     let whereCondition: any = {};
     const unitKerjaIdQuery = req.query.unitKerjaId ? parseInt(req.query.unitKerjaId as string, 10) : undefined;
     
-    if (user.role === 'ENTRY_USER' && user.unitKerjaId) {
+    if (user.role === 'ENTRY_USER') {
         whereCondition.unitKerjaId = user.unitKerjaId;
     } else if (unitKerjaIdQuery) {
         whereCondition.unitKerjaId = unitKerjaIdQuery;
@@ -123,22 +127,26 @@ export const updateReport = async (req: AuthRequest, res: Response, next: NextFu
         const finalData: any = { ...dataToUpdate };
         if (tanggal) finalData.tanggal = new Date(tanggal);
 
-        const updatedReport = await prisma.laporanKinerja.update({
-            where: { id },
-            data: finalData,
+        const result = await prisma.$transaction(async (tx) => {
+            const updated = await tx.laporanKinerja.update({
+                where: { id },
+                data: finalData,
+            });
+
+            if (kategori && kategori.length > 0) {
+                await tx.laporanKinerjaKategoriKinerja.deleteMany({
+                    where: { laporanKinerjaId: id },
+                });
+                const mappedKategori = handleKategori(id, kategori);
+                await tx.laporanKinerjaKategoriKinerja.createMany({
+                    data: mappedKategori,
+                });
+            }
+
+            return updated;
         });
 
-        if (kategori && kategori.length > 0) {
-            await prisma.laporanKinerjaKategoriKinerja.deleteMany({
-                where: { laporanKinerjaId: id },
-            });
-            const mappedKategori = handleKategori(id, kategori);
-            await prisma.laporanKinerjaKategoriKinerja.createMany({
-                data: mappedKategori,
-            });
-        }
-
-        res.json({ success: true, message: 'Laporan berhasil diperbarui.', data: updatedReport });
+        res.json({ success: true, message: 'Laporan berhasil diperbarui.', data: result });
 
     } catch (error) {
         next(error);
@@ -160,8 +168,6 @@ export const deleteReport = async (req: AuthRequest, res: Response, next: NextFu
         }
 
         await prisma.laporanKinerja.delete({ where: { id } });
-
-
         res.status(204).send();
     } catch (error) {
         next(error);
